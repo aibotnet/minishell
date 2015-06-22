@@ -1,0 +1,969 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head profile="http://www.w3.org/2005/10/profile">
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="title" content="School of Earth Sciences, computing resources"/>
+<meta name="description" content="description"/>
+<meta name="keywords" content="keywords"/>
+<meta name="verify-v1" content="google-webmaster-auth" />
+<title>Unix Commands</title>
+<link type="text/css" rel="stylesheet" href="/computing/stylesheets/base.css" media="all" />
+<link type="text/css" rel="stylesheet" href="/computing/stylesheets/site.css" media="all" />
+<link type="text/css" rel="stylesheet" href="/computing/stylesheets/phil.css" media="all" />
+<!--[if lt IE 8]><link type="text/css" rel="stylesheet" href="/computing/stylesheets/ie.css" 
+media="all" /><![endif]-->
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript" src="/computing/javascripts/searchbox.js"></script>
+<script type="text/javascript" src="/computing/javascripts/jquery.clickmenu.setup.js"></script>
+</head>
+<body>
+  <div id="globalnav">
+    <div id="linksbar">
+        <div id="stanford-home"><a href="http://stanford.edu" title="Stanford University Homepage"></a></div>
+	
+			     	 <a class="sunet" href="/computing/webauth/wa_login.php/?user_page_url=/computing/unix/shell/commands.php">Login with your SUNet ID</a> |
+	 <a class="sunet" href="/alumni/support">Support Earth Sciences</a>
+	
+	<a id="explore-menu" href="#">Explore</a></div>
+      </div>
+     </div>  
+      <div id="explore-shelf-pos">
+        <div id="explore-shelf">
+          <div>
+            <h3>Departments &amp; Programs</h3>
+            <ul>
+              <li><h4><a href="http://pangea.stanford.edu/ERE/">Department of Energy Resources Engineering</a></h4></li>
+	      <li><h4><a href="http://eess.stanford.edu/">Department of Environmental Earth System Science</a></h4></li>
+	      <li><h4><a href="http://ges.stanford.edu/">Department of Geological & Environmental Sciences</a></h4></li>
+	      <li><h4><a href="http://geophysics.stanford.edu/">Department of Geophysics</a></h4></li>
+	      <li><h4><a href="http://earthsystems.stanford.edu/">Earth Systems Program</a></h4></li>
+	      <li><h4><a href="http://e-iper.stanford.edu/">Emmett Interdisciplinary Program in Environment &amp; Resources</a></h4></li>
+            </ul>
+           </div>
+         <div>
+         <h3>More</h3>
+         <ul id="more-links">
+           <li><a href="/faculty-research/research-groups">Research Groups</a></li>
+           <li><a href="/faculty-research/shared-facilities">Shared Analytical Facilities</a></li>
+           <li><a href="/faculty-research/affiliate-programs">Industrial Affiliate Programs</a></li>
+           <li><a href="/academics/field-programs">Field Programs</a></li>
+           <li><a href="/academics/outreach-programs">Outreach Programs</a></li>
+         </ul>
+       </div>
+    </div>
+  </div>
+
+  <div id="page-header">
+    <div id="branding"><a href="http://pangea.stanford.edu/"><img src="/sites/default/files/ses_main_logo.png" alt="School of Earth Sciences" /></a></div>
+ 
+    <ul id="target-audience">
+      <li><a href="http://pangea.stanford.edu/prospective-students">Prospective Students</a></li>
+      <li><a href="http://pangea.stanford.edu/current-students">Current Students</a></li>
+      <li><a href="http://pangea.stanford.edu/faculty-and-staff">Faculty &amp; Staff</a></li>
+      <li><a href="http://pangea.stanford.edu/alumni">Alumni &amp; Friends</a></li>
+    </ul>
+    <div id="navigation">  
+      <ul>
+        <li><a href="http://pangea.stanford.edu/" class="first">Home</a></li>
+        <li><a href="http://pangea.stanford.edu/about" >About</a></li>
+        <li><a href="http://pangea.stanford.edu/people">People</a></li>
+        <li><a href="http://pangea.stanford.edu/academics">Departments & Programs</a></li>
+        <li><a href="http://pangea.stanford.edu/research">Research</a></li>
+        <li><a href="http://pangea.stanford.edu/news">News</a></li>
+        <li><a href="http://pangea.stanford.edu/events">Events</a></li>
+        <li class="current"><a href="http://pangea.stanford.edu/resources">Resources</a></li>
+      </ul>     
+
+    <div id="search-box">
+      <form id="search" action="http://pangea.stanford.edu/search/" method="get">
+        <input id="query" name="keys" type="text" value="Enter your search keywords here..." />
+        <input type="submit" class="btn" name="op" value="" />
+      </form>
+    </div>              
+    </div>      
+  </div><!-- end header -->
+  <div id="container">
+  <div id="page">
+<!-- navbar.php -->
+
+<div id="subpage-navigation">
+  <ul class="menu menus">
+		<li><a href="/resources/hartley" title="">Hartley Conference Center</a></li>
+		<li><a href="/resources/rooms-resources" title="" >Room Resources</a></li>
+		<li><a href="/computing/" title="" >Computing Resources</a>
+			<ul>
+							
+		    <li><a href="/computing/news/" >News</a></li>
+		    
+				<!-- Navigation for New Users section -->
+		    <li><a href="/computing/newusers/" >New Users</a>
+		    </li>
+		    
+				<!-- Navigation for Policies section -->
+		    <li><a href="/computing/policies/" >Policies</a>
+		    </li>
+		    
+				<!-- Navigation for Sesfs File Server section -->
+		    <li><a href="/computing/sesfs/" ><em>Sesfs</em> File Server</a>
+		    </li>        
+		    
+				<!-- Navigation for Web Server section -->
+		    <li><a href="/computing/hosting/" >Web Server</a>
+		    </li>        
+		    
+				<!-- Navigation for Computer Labs section -->
+		    <li><a href="/computing/resources/other/clusters.php">Computer Labs</a>
+		    </li>        
+		    
+				<!-- Navigation for Computational Cluster section -->
+		    <li><a href="http://cees.stanford.edu/" target="new">CEES Computational Clusters</a>
+		    </li>        
+		    
+				<!-- Navigation for Help section -->
+		    <li><a href="/computing/help/" >Get Help</a>
+		    </li>        
+		    
+				<!-- Navigation for Setup section -->
+		    <li><a href="/computing/setup/" >Net Connections</a>
+		    </li>
+		    
+				<!-- Navigation for Mac OS X section -->        
+		    <li><a href="/computing/macintosh/" >Your Macintosh</a>
+		    </li> 
+		    
+				<!-- Navigation for Windows section -->           
+		    <li><a href="/computing/windows/" >Your Windows PC</a>
+		    </li> 
+		    
+				<!-- Navigation for Unix/Linux section -->           
+		    <li><a href="/computing/unixws/" >Your Unix/Linux System</a>
+		    </li>
+		    
+				<!-- Navigation for Resources section -->            
+		    <li><a href="/computing/resources/" >Other School Resources</a>
+		    </li>
+		    
+				<!-- Navigation for Using Unix section -->            
+		    <li><a href="/computing/unix/" >Using Unix</a><ul><li><a href="/computing/unix/overview/" >Overview</a></li><li><a href="/computing/unix/documentation.php" >Documentation</a></li><li><a href="/computing/unix/shell/" class="active">Using the Shell</a></li><li><a href="/computing/unix/xterminal/" >Using X-Windows</a></li><li><a href="/computing/unix/files/" >File Manipulation</a></li><li><a href="/computing/unix/netcommands/" >Net Commands</a></li><li><a href="/computing/unix/editing/" >Editing Text</a></li><li><a href="/computing/unix/formatting" >Formatting Text</a></li><li><a href="/computing/unixws/printing.php" >Printing</a></li><li><a href="/computing/unix/utilities/" >Filters &amp; Utilities</a></li><li><a href="/computing/unix/programming/" >Programming</a></li></ul></li>
+	    </li>
+    </ul>
+		<li class="collapsed last menu-mlid-356"><a href="/resources/health-safety" title="">Health and Safety</a></li>    
+  </ul>                  
+</div>
+
+<div id="main-content">
+
+<h1> Common unix commands and utilities</h1>
+
+<br /><br />
+
+
+<p class="revision">
+Copyright Phillip Farrell.  Last revision August 6, 2010
+</p>
+
+<p>
+This page was created to list commonly used Unix commands and useful
+utilities that were available on a time-sharing Tru64 Unix system
+operated by the School of Earth Sciences in the early 2000s.
+</p>
+<p>
+This page was edited in 2010 to remove
+special programs that were only available on the School's system,
+which is no longer in use.
+The remaining commands and 
+utilities listed here should be available for all varieties of Unix
+and Linux, including Mac OS X (from the Terminal application).
+</p>
+<p>
+Program listings are organized by general subject categories. Keys preceded 
+by a
+<samp>^</samp>
+character are
+<samp>CONTROL</samp>
+key combinations. Access the online manual with the 
+<samp>man</samp>
+program to get more information on these programs, for example, 
+<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<samp>man cp</samp>
+</p>
+<p>
+To find a program not on this list (and there are hundreds), try the
+<samp>man</samp> 
+program with the
+<samp>-k</samp>
+option followed by a keyword, for example,
+<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<samp>man -k tape</samp>
+<br />
+to find all on-line manual entries that refer to programs that work with tapes. 
+</p>
+
+<p>
+<h3> Terminal control characters for C-shell
+(<span class="samph3">csh</span>)</h3>
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+<td width="100"><samp>^h</samp>, <samp>backspace</samp></td>
+<td>erase previously typed character</td>
+</tr>
+<tr>
+<td><samp>^u</samp></td>
+<td>erase entire line of input so far typed</td>
+</tr>
+<tr>
+<td><samp>^d</samp></td>
+<td>end-of-input for programs reading from terminal</td>
+</tr>
+<tr>
+<td><samp>^s</samp></td>
+<td>suspend writing to terminal (freezes terminal)</td>
+</tr>
+<tr>
+<td><samp>^q</samp></td>
+<td>continue writing to terminal</td>
+</tr>
+<tr>
+<td><samp>^z</samp></td>
+<td>suspend currently running job; restart with bg or fg</td>
+</tr>
+<tr>
+<td><samp>^c</samp></td>
+<td>kill currently running program and allow clean-up before exiting </td>
+</tr>
+<tr>
+<td><samp>^\</samp></td>
+<td>emergency kill of currently running program with no chance of cleanup</td>
+</tr>
+</table>
+<p>
+Also see a <a href="specialchars.php">list of special characters</a> that should not be used in filenames.
+<h3> Login and authentication </h3>
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+<td width="100"><samp>login</samp></td>
+<td>access computer; start interactive session</td>
+</tr>
+<tr>
+<td><samp>logout</samp></td>
+<td>disconnect terminal session</td>
+</tr>
+<tr>
+<td><samp>passwd</samp></td>
+<td>change local login password; you
+<strong>must</strong>
+set a
+<a href="../../resources/network/security/safeguards/strongpass.php">
+strong password</a>
+that is not easily guessed</td>
+</tr>
+<tr>
+<td><samp>kinit</samp></td>
+<td>obtain kerberos ticket for connections to other 
+                        kerberized computers</td>
+</tr>
+<tr>
+<td><samp>kdestroy</samp></td>
+<td>destroy kerberos tickets (authorizations)</td>
+</tr>
+</table>
+
+<h3> Information </h3>
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+<td width="100"><samp>date</samp></td>
+<td>show date and time</td>
+</tr>
+<tr>
+<td><samp>history</samp></td>
+<td>list of previously executed commands</td>
+</tr>
+<tr>
+<td><samp>man</samp></td>
+<td>show online documentation by program name</td>
+</tr>
+<tr>
+<td><samp>info</samp></td>
+<td>online documentation for GNU programs</td>
+</tr>
+<tr>
+<td><samp>w</samp>, <samp>who</samp></td>
+<td>who is on the system and what they are doing</td>
+</tr>
+<tr>
+<td><samp>whoami</samp></td>
+<td>who is logged onto this terminal</td>
+</tr>
+<tr>
+<td><samp>top</samp></td>
+<td>show system stats and top CPU using processes</td>
+</tr>
+<tr>
+<td><samp>uptime</samp></td>
+<td>show one line summary of system status</td>
+</tr>
+</table>
+
+<h3> File management </h3>
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+<td width="100"><samp>cat</samp></td>
+<td>combine files</td>
+</tr>
+<tr>
+<td><samp>cp</samp></td>
+<td>copy files</td>
+</tr>
+<tr>
+<td><samp>ls</samp></td>
+<td>list files in a directory and their attributes</td>
+</tr>
+<tr>
+<td><samp>mv</samp></td>
+<td>change file name or directory location</td>
+</tr>
+<tr>
+<td><samp>rm</samp></td>
+<td>remove files</td>
+</tr>
+<tr>
+<td><samp>ln</samp></td>
+<td>create another link (name) to a file</td>
+</tr>
+<tr>
+<td><samp>chmod</samp></td>
+<td>set file permissions</td>
+</tr>
+<tr>
+<td><samp>crypt</samp></td>
+<td>encode/decode a file with a private key</td>
+</tr>
+<tr>
+<td><samp>gzip</samp>, <samp>gunzip</samp></td>
+<td>compress/decompress a file</td>
+</tr>
+<tr>
+<td><samp>find</samp></td>
+<td>find files that match specific criteria</td>
+</tr>
+</table>
+
+<h3> Display contents of files </h3>
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+<td width="100"><samp>cat</samp></td>
+<td>copy files to display device</td>
+</tr>
+<tr>
+<td><samp>more</samp></td>
+<td>show text file on display terminal with paging control</td>
+</tr>
+<tr>
+<td><samp>head</samp></td>
+<td>show first few lines of a file(s)</td>
+</tr>
+<tr>
+<td><samp>tail</samp></td>
+<td>show last few lines of a file; or reverse line order</td>
+</tr>
+<tr>
+<td><samp>vi</samp></td>
+<td>full-featured screen editor for modifying text files</td>
+</tr>
+<tr>
+<td><samp>pico</samp></td>
+<td>simple screen editor for modifying text files</td>
+</tr>
+<tr>
+<td><samp>grep</samp></td>
+<td>display lines that match a pattern</td>
+</tr>
+<tr>
+<td><samp>lpr</samp></td>
+<td>send file to printer</td>
+</tr>
+<tr>
+<td><samp>pr</samp></td>
+<td>format file with page headers, multiple columns, etc.</td>
+</tr>
+<tr>
+<td><samp>diff</samp></td>
+<td>compare two files and show differences</td>
+</tr>
+<tr>
+<td><samp>cmp</samp></td>
+<td>compare two binary files and report if different</td>
+</tr>
+<tr>
+<td><samp>comm</samp></td>
+<td>compare two files; show common or unique lines</td>
+</tr>
+<tr>
+<td><samp>od</samp></td>
+<td>display binary files as eqivalent octal/hex codes</td>
+</tr>
+<tr>
+<td><samp>strings</samp></td>
+<td>show printable text embedded in binary files</td>
+</tr>
+<tr>
+<td><samp>file</samp></td>
+<td>examine file(s) and guess type: text, data, program, etc.</td>
+</tr>
+<tr>
+<td><samp>wc</samp></td>
+<td>count characters, words, and lines in a file</td>
+</tr>
+</table>
+<h3> Directories </h3>
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+<td width="100"><samp>cd</samp></td>
+<td>change to new directory</td>
+</tr>
+<tr>
+<td><samp>mkdir</samp></td>
+<td>create new directory</td>
+</tr>
+<tr>
+<td><samp>rmdir</samp></td>
+<td>remove empty directory (you must remove files first)</td>
+</tr>
+<tr>
+<td><samp>mv</samp></td>
+<td>change name of directory</td>
+</tr>
+<tr>
+<td><samp>pwd</samp></td>
+<td>show current directory</td>
+</tr>
+</table>
+<h3> Disks </h3>
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+<td width=100><samp>df</samp></td>
+<td>summarize free space on disk filesystems</td>
+</tr>
+<tr>
+<td><samp>du</samp></td>
+<td>show disk space used by files or directories</td>
+</tr>
+</table>
+<h3> Special character handling for C-shell (See
+<span class="samph3">man csh</span>) 
+</h3>
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+<td width="100"><samp>*</samp></td>
+<td>match any characters in a file name</td>
+</tr>
+<tr>
+<td><samp>~user</samp></td>
+<td>shorthand for home directory of<samp> user</samp></td>
+</tr>
+<tr>
+<td><samp>$name</samp></td>
+<td>substitute value of variable <samp>name</samp></td>
+</tr>
+<tr>
+<td><samp>\</samp></td>
+<td>turn off special meaning of character that follows</td>
+</tr>
+<tr>
+<td><samp>'</samp></td>
+<td>in pairs, quote string with special chars, except <samp>!</samp></td>
+</tr>
+<tr>
+<td><samp>&quot;</samp></td>
+<td>in pairs, quote string with special chars, except <samp>!</samp>, <samp>$</samp></td>
+</tr>
+<tr>
+<td><samp>`</samp></td>
+<td>in pairs, substitute output from enclosed command</td>
+</tr>
+</table>
+<h3> Controlling program execution for C-shell (See
+<span class="samph3">man csh</span>) 
+</h3>
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+<td width="100">&amp;</td>
+<td>run job in background</td>
+</tr>
+<tr>
+<td>
+<samp>^c</samp>
+</td>
+<td>kill job in foreground</td>
+</tr>
+<tr>
+<td><samp>^z</samp></td>
+<td>suspend job in foreground</td>
+</tr>
+<tr>
+<td><samp>fg</samp></td>
+<td>restart suspended job in foreground</td>
+</tr>
+<tr>
+<td><samp>bg</samp></td>
+<td>run suspended job in background</td>
+</tr>
+<tr>
+<td><samp>;</samp></td>
+<td>delimit commands on same line</td>
+</tr>
+<tr>
+<td><samp>()</samp></td>
+<td>group commands on same line</td>
+</tr>
+<tr>
+<td><samp>!</samp></td>
+<td>re-run earlier commands from history list</td>
+</tr>
+<tr>
+<td><samp>jobs</samp></td>
+<td>list current jobs</td>
+</tr>
+<tr>
+<td><samp>ps</samp></td>
+<td>show process information</td>
+</tr>
+<tr>
+<td><samp>kill</samp></td>
+<td>kill background job or previous process</td>
+</tr>
+<tr>
+<td><samp>nice</samp></td>
+<td>run program at lower priority</td>
+</tr>
+<tr>
+<td><samp>at</samp></td>
+<td>run program at a later time</td>
+</tr>
+<tr>
+<td><samp>crontab</samp></td>
+<td>run program at specified intervals</td>
+</tr>
+<tr>
+<td><samp>limit</samp></td>
+<td>see or set resource limits for programs</td>
+</tr>
+<tr>
+<td><samp>alias</samp></td>
+<td>create alias name for program (normally used in <samp>.login</samp> file)</td>
+</tr>
+<tr>
+<td><samp>sh</samp>, <samp>csh</samp></td>
+<td>execute command file</td>
+</tr>
+</table>
+<h3> Controlling program input/output for C-shell (See
+<span class="samph3">man csh</span>) 
+</h3>
+
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+<td width="100"><samp>|</samp></td>
+<td>pipe output to input</td>
+</tr>
+<tr>
+<td><samp>&gt;</samp></td>
+<td>redirect output to a storage file</td>
+</tr>
+<tr>
+<td><samp>&lt;</samp></td>
+<td>redirect input from a storage file</td>
+</tr>
+<tr>
+<td><samp>&gt;&gt;</samp></td>
+<td>append redirected output to a storage file</td>
+</tr>
+<tr>
+<td><samp>tee</samp></td>
+<td>copy input to both file and next program in pipe</td>
+</tr>
+<tr>
+<td><samp>script</samp></td>
+<td>make file record of all terminal activity</td>
+</tr>
+</table>
+
+<h3>Email and communication </h3>
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+<td width="100"><samp>msgs</samp></td>
+<td>read system bulletin board messages</td>
+</tr>
+<tr>
+<td><samp>mailx</samp></td>
+<td>send/read email; can be run by other programs to send exisiting files via 
+email</td>
+</tr>
+<tr>
+<td><samp>uuencode</samp><br /><samp>uudecode</samp></td>
+<td>encode/decode a binary file for transmission via email</td>
+</tr>
+<tr>
+<td><samp>rn</samp></td>
+<td>read USENET news groups</td>
+</tr>
+</table>
+
+<h3> Editors and formatting utilities </h3>
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+<td width="100"><samp>sed</samp></td>
+<td >programmable text editor for data streams</td>
+</tr>
+<tr>
+<td><samp>vi</samp></td>
+<td>full-featured editor for character terminals</td>
+</tr>
+<tr>
+<td><samp>emacs</samp></td>
+<td>GNU emacs editor for character terminals</td>
+</tr>
+<tr>
+<td><samp>xemacs</samp></td>
+<td>GNU emacs editor for X Window terminals</td>
+</tr>
+<tr>
+<td><samp>pico</samp></td>
+<td>very simple text editor</td>
+</tr>
+<tr>
+<td><samp>fmt</samp></td>
+<td>fill and break lines to make all same length</td>
+</tr>
+<tr>
+<td><samp>fold</samp></td>
+<td>break long lines to specified length</td>
+</tr>
+</table>
+<h3> X Window client programs (output to X terminal or server) </h3>
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+<td width="100"><samp>xterm</samp></td>
+<td>provide login shell window</td>
+</tr>
+<tr>
+<td><samp>xauth</samp></td>
+<td>manipulate authorization files</td>
+</tr>
+<tr>
+<td><samp>xload</samp></td>
+<td>show system load</td>
+</tr>
+<tr>
+<td><samp>xman</samp></td>
+<td>full screen online manual viewer</td>
+</tr>
+<tr>
+<td><samp>xemacs</samp></td>
+<td>GNU emacs editor</td>
+</tr>
+<tr>
+<td><samp>gv</samp></td>
+<td>interface to contol <samp>gs</samp> to display PostScript or PDF files on screen</td>
+</tr>
+<tr>
+<td><samp>xdvi</samp></td>
+<td>display DVI files on X Window (screen preview)</td>
+</tr>
+<tr>
+<td><samp>gnuplot</samp></td>
+<td>interactive data plotting on screen</td>
+</tr>
+</table>
+
+<h3> TeX typesetting system </h3>
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+<td width="100"><samp>tex</samp></td>
+<td>process TeX files to DVI (device independent) output</td>
+</tr>
+<tr>
+<td><samp>latex</samp></td>
+<td>process LaTeX files to DVI</td>
+</tr>
+<tr>
+<td><samp>dvips</samp></td>
+<td>print DVI files on Postscript laser printer</td>
+</tr>
+<tr>
+<td><samp>xdvi</samp></td>
+<td>display DVI files on X Window (screen preview)</td>
+</tr>
+<tr>
+<td><samp>latex2html</samp></td>
+<td>translate LaTeX files to HTML (for web pages)</td>
+</tr>
+</table>
+ 
+<h3>Printing (BSD based)</h3>
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+<td width="100"><samp>lpr</samp></td>
+<td>send file to print queue</td>
+</tr>
+<tr>
+<td><samp>lpq</samp></td>
+<td>examine status of files in print queue</td>
+</tr>
+<tr>
+<td><samp>lprm</samp></td>
+<td>remove a file from print queue</td>
+</tr>
+<tr>
+<td><samp>enscript</samp></td>
+<td>convert text files to PostScript format for printing</td>
+</tr>
+</table>
+
+<h3> Interpreted languages and data manipulation utilities </h3>
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+<td width="100"><samp>sed</samp></td>
+<td>programmable text editor for data streams</td>
+</tr>
+<tr>
+<td><samp>awk</samp></td>
+<td>pattern scanning and processing language</td>
+</tr>
+<tr>
+<td><samp>perl</samp></td>
+<td>Practical Extraction and Report Language</td>
+</tr>
+<tr>
+<td><samp>sort</samp></td>
+<td>sort or merge lines in a file(s) by specified fields</td>
+</tr>
+<tr>
+<td><samp>tr</samp></td>
+<td>translate characters</td>
+</tr>
+<tr>
+<td><samp>cut</samp></td>
+<td>cut out columns from a file</td>
+</tr>
+<tr>
+<td><samp>paste</samp></td>
+<td>paste columns into a file</td>
+</tr>
+<tr>
+<td><samp>dd</samp></td>
+<td>copy data between devices; reblock; convert EBCDIC</td>
+</tr>
+</table>
+
+<h3> Graphics and mapping </h3>
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+<td width="100"><samp>gnuplot</samp></td>
+<td>interactive data plotting; outputs to PostScript or X Window</td>
+</tr>
+<tr>
+<td><samp>gs</samp></td>
+<td>&quot;ghostscript&quot; converter displays PostScript files on X Window displays 
+or other devices</td>
+</tr>
+</table>
+
+<h3> Networking/communications </h3>
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+<td width="100"><samp>ssh</samp></td>
+<td>remote login/command execution; encrypted</td>
+</tr>
+<tr>
+<td><samp>scp</samp></td>
+<td>remote non-interactive file copy; encrypted</td>
+</tr>
+<tr>
+<td><samp>sftp</samp></td>
+<td>remote interactive file copy; encrypted</td>
+</tr>
+<tr>
+<td><samp>telnet</samp></td>
+<td>remote network login; plain text password - 
+<strong>not recommended</strong></td>
+</tr>
+<tr>
+<td><samp>ftp</samp></td>
+<td>network file transfer program; plain text password - 
+<strong>not recommended</strong></td>
+</tr>
+<tr>
+<td><samp>host</samp></td>
+<td>find IP address for given host name, or vice versa</td>
+</tr>
+<tr>
+<td><samp>lynx</samp></td>
+<td>web browser for character based (text-only) terminals</td>
+</tr>
+<tr>
+<td><samp>gzip</samp>, <samp>gunzip</samp></td>
+<td>compress/decompress a file</td>
+</tr>
+<tr>
+<td><samp>tar</samp></td>
+<td>combine multiple files/dirs into single archive</td>
+</tr>
+<tr>
+<td><samp>uuencode</samp><br /><samp>uudecode</samp></td>
+<td>encode/decode a binary file for transmission via email</td>
+</tr>
+</table>
+
+<h3> Compilers, interpreters and programming tools </h3>
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+<td width="100"><samp>csh</samp></td>
+<td>command language interpreter (C-shell scripts)</td>
+</tr>
+<tr>
+<td><samp>ksh</samp></td>
+<td>command language interpreter (Korn-shell scripts)</td>
+</tr>
+<tr>
+<td><samp>sh</samp></td>
+<td>command language interpreter (Borne-shell scripts)</td>
+</tr>
+<tr>
+<td><samp>f77</samp></td>
+<td>Fortran 77 compiler</td>
+</tr>
+<tr>
+<td><samp>f2c</samp></td>
+<td>convert fortran source code to C source code</td>
+</tr>
+<tr>
+<td><samp>gcc</samp></td>
+<td>GNU C compiler</td>
+</tr>
+<tr>
+<td><samp>g++</samp></td>
+<td>GNU C++ compiler</td>
+</tr>
+<tr>
+<td><samp>dbx</samp></td>
+<td>command-line symbolic debugger for compiled C or Fortran</td>
+</tr>
+<tr>
+<td><samp>make</samp></td>
+<td>recompile programs from modified source</td>
+</tr>
+<tr>
+<td><samp>cflow</samp></td>
+<td>generate C flow graph</td>
+</tr>
+</table>
+
+<h3> Programming libraries (see <span class="big">man library_name</span>) </h3>
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+<td width="100"><samp>lapack</samp></td>
+<td>Fortran 77 routines for numerical linear algebra (supersedes LINPACK and EISPACK)</td>
+</tr>
+<tr>
+<td><samp>X</samp></td>
+<td>routines to interface with X window system (no man page -- get the X Toolkit 
+book) </td>
+</tr>
+<tr>
+<td><samp>dbm</samp></td>
+<td>database routines</td>
+</tr>
+<tr>
+<td><samp>xdr</samp></td>
+<td>library routines for external data representation</td>
+</tr>
+<tr>
+<td><samp>netcdf</samp></td>
+<td>routines for machine independent data representation</td>
+</tr>
+</table>
+
+<h3> Tape manipulation and archiving </h3>
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+<td width="100"><samp>mt</samp></td>
+<td>manipulate tape drive and position tape</td>
+</tr>
+<tr>
+<td><samp>dd</samp></td>
+<td>unformatted tape read and write; file conversion</td>
+</tr>
+<tr>
+<td><samp>tar</samp></td>
+<td>archive disk files on tape or disk</td>
+</tr>
+<tr>
+<td><samp>ltf</samp></td>
+<td>read/write ANSI standard label tapes</td>
+</tr>
+</table>
+
+
+</div> <!-- #end main-content -->
+<p align=center>
+<a href="/computing/mailtosesmail.php?id=managers&name=the%20Earth%20Sciences%20System%20Managers" target="mail">
+Comments or Questions?</a>
+</p>
+    <div class="clearfix"></div>
+    </div><!-- end #page -->
+  </div><!-- end container -->
+
+  <div id="footer">
+		<div id="school-address">
+			<h4>Stanford University<br />School of Earth Sciences</h4>
+			<ul>
+				<li>397 Panama Mall, CA 94305-2210 Mitchell Building 101<br />Tel: (650) 723-2300</li>
+				
+			</ul>
+		</div>
+		
+		<div id="resources">
+			<h4>Related Resources</h4>
+			<ul>
+				<li><a href="http://earthsci.stanford.edu/resources/health-safety">Hartley Conference Center</a></li>
+				<li><a href="http://earthsci.stanford.edu/resources/rooms-resources">Conference Rooms</a></li>
+				<li><a href="http://earthsci.stanford.edu/resources/computing-resources">Computing Resources</a></li>
+				<li><a href="http://earthsci.stanford.edu/resources/health-safety">Health and Safety</a></li>
+			</ul>
+		</div>
+
+		<div id="helpful-links">
+			<h4>How Can We Help?</h4>
+			<ul>
+				<li><a href="http://www.stanford.edu/dept/visitorinfo/plan/parking.html" target="_blank"  rel="nofollow">Maps & Directions</a></li>
+				<li><a href="http://studentaffairs.stanford.edu/registrar" target="_blank"  rel="nofollow">Office of the Registrar</a></li>
+				<li><a href="http://stanfordwho.stanford.edu/SWApp" target="_blank" rel="nofollow">StanfordWho</a></li>
+				<li><a href="http://earthsci.stanford.edu/about/contact">Contact Us</a></li>
+			</ul>
+		</div>
+		
+		<div>
+			<h4>Welcome to Earth Sciences</h4>
+			<p>Stanford Earth scientists work to gain a better understanding of our planet's energy &amp; resource base that supports society, 
+			geologic hazards, a changing climate, &amp; the challenge of sustainability. <br /><a href="http://earthsci.stanford.edu/about">Read more</a></p>
+		</div>
+
+  </div><!-- end footer -->
+
+<!-- google analytics -->
+	<script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+	try {
+	var pageTracker = _gat._getTracker("UA-2230587-1");
+	pageTracker._trackPageview();
+	} catch(err) {}</script>
+<!-- end google analytics -->
+
+</body>
+</html>
+

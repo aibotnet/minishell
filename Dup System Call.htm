@@ -1,0 +1,87 @@
+<html>
+
+<head>
+<title>Dup System Call</title>
+<link rel="stylesheet" type="text/css" href="../Main.css">
+</head>
+
+<body>
+
+<p><a href="Main.htm" target="_top">[Main]</a></p>
+
+<h1 align="center">Dup System Call</h1>
+
+<p>&nbsp;</p>
+
+<pre><b>     #include</b> <b>&lt;unistd.h&gt;</b>
+
+     <i>int</i>
+     <b>dup</b>(<i>int</i> <i>oldd</i>)
+
+     <i>int</i>
+     <b>dup2</b>(<i>int</i> <i>oldd</i>, <i>int</i> <i>newd</i>)
+
+
+</pre>
+
+<h2>DESCRIPTION</h2>
+
+<pre>     <b>Dup</b>() duplicates an existing object descriptor and returns its value to
+     the calling process (<i>newd</i> = <b>dup</b>(<i>oldd</i>)). The argument <i>oldd</i> is a small non-
+     negative integer index in the per-process descriptor table.  The value
+     must be less than the size of the table, which is returned by
+     <b>getdtablesize(2)</b>.	The new descriptor returned by the call is the lowest
+     numbered descriptor currently not in use by the process.
+
+     The object referenced by the descriptor does not distinguish between <i>oldd</i>
+     and <i>newd</i> in any way.  Thus if <i>newd</i> and <i>oldd</i> are duplicate references to
+     an open file, <b>read(2)</b>,  <b>write(2)</b> and <b>lseek(2)</b> calls all move a single
+     pointer into the file, and append mode, non-blocking I/O and asynchronous
+     I/O options are shared between the references.  If a separate pointer in-
+     to the file is desired, a different object reference to the file must be
+     obtained by issuing an additional <b>open(2)</b> call.  The close-on-exec flag
+     on the new file descriptor is unset.
+
+     In <b>dup2</b>(), the value of the new descriptor <i>newd</i> is specified.  If this
+     descriptor is already in use and <i>oldd</i> != <i>newd</i>, the descriptor is first
+     deallocated as if a <b>close(2)</b> call had been used.  If <i>oldd</i> is not a valid
+     descriptor, then <i>newd</i> is not closed.  If <i>oldd</i> == <i>newd</i> and <i>oldd</i> is a valid
+     descriptor, then <b>dup2</b>() is successful, and does nothing.
+
+
+</pre>
+
+<h2>IMPLEMENTATION NOTES</h2>
+
+<pre>     In the non-threaded library <b>dup</b>() is implemented as the <i>dup</i> syscall.
+
+     In the threaded library, the <i>dup</i> syscall is assembled to
+     <b>_thread_sys_dup</b>() and <b>dup</b>() is implemented as a function which locks <i>oldd</i>
+     for read and write, then calls <b>_thread_sys_dup</b>().	Before returning,
+     <b>dup</b>() unlocks <i>oldd</i>.
+
+     In the non-threaded library <b>dup2</b>() is implemented as the <i>dup2</i> syscall.
+
+     In the threaded library, the <i>dup2</i> syscall is assembled to
+     <b>_thread_sys_dup2</b>() and <b>dup2</b>() is implemented as a function which locks
+     both <i>oldd</i> and <i>newd</i> for read and write, then calls <b>_thread_sys_dup2</b>().
+     Before returning, <b>dup2</b>() unlocks <i>oldd</i>. and <i>newd</i>.
+
+
+</pre>
+
+<h2>RETURN VALUES</h2>
+
+<pre>     The value -1 is returned if an error occurs in either call.  The external
+     variable <i>errno</i> indicates the cause of the error.
+
+
+</pre>
+
+<h2>ERRORS</h2>
+
+<pre>     <b>Dup</b>() and <b>dup2</b>() fail if:
+     A <b>dup</b>() and a <b>dup2</b>() function call appeared in Version 7 AT&amp;T UNIX.
+</pre>
+</body>
+</html>

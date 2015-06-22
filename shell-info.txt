@@ -1,0 +1,196 @@
+		Simulation of Mini shell 
+		Details:  A simulation of UNIX command line interpreter (Shell) on C,
+		which includes basic functionalities of accepting commands from the user,
+		executing valid commands and displaying results. 
+		Language: C (gcc), Platform:  UNIX
+		
+About:
+		A shell in computing provides a user interface for access to an operating system's kernel services. 
+		"Shell" is also used losely to describe applications, including software that is "built around" 
+		a particular component, such as web browsers and email clients that are, in themselves, "shells" 
+		for HTML rendering engines. The term "shell" in computing, being the outer layer between the user
+		and the operating system kernel, is synonomous with the general word "shell".
+
+CommandImplemented:
+		1.pipe
+			e.g.
+				tr 'A-Z' 'a-z' <fnord.txt | tr -cs 'a-z' '\n' | sort | uniq | comm -23 - /usr/share/dict/words
+				ps -ax | grep Finder
+				ps -ax | tee processes.txt | more
+		2.redirection
+			e.g.
+				ps -ax >  processes.txt
+				ps -ax >> processes.txt
+				wc -l <   processes.txt
+			combined.
+			1.  <  >
+				e.g.
+			2.	<  <
+				e.g.
+			3.  >  >
+				e.g.
+			4.	>  <
+				e.g.
+		3.cd
+		4.echo
+		5.wc
+		6.pwd
+		7.exit
+		8.clear
+		9.history
+
+HeaderFile Used:
+		#include<unistd.h>
+		#include<fcntl.h>
+		#include<dirent.h>
+	
+System Call Used:
+		1.char* get_current_dir_name();
+			return the current working directory.
+		2.int execvp(char*,char**,NULL);
+			this system call is for executing a progrma.
+			by default it try to execute from /bin directory.
+		3.open(filename,O_CREAT |O_APPEND|O_WRONLY,0777)
+			for opening a file.
+		4.pipe(fd_array);
+			int fd_array[2];
+		5.dup2(fd_array[1] ,1);
+		
+		6.void* getenv(char *);
+			e.g.
+			1.
+
+Function used.
+		1.void  parse(char * , char** , char*);
+			explanation:
+			
+		2.void  change_Directory();
+			explanation:
+			void change_Directory(){
+			if (tokenArray[1] == NULL || strcmp(tokenArray[1],"~")==0 ) 
+               		chdir(getenv("HOME"));
+			else if (   chdir(tokenArray[1] ) == -1   )
+					printf("Error : ");
+		    } 
+		3.void  do_help();
+			explanation:
+			
+		4.void  command_ALL(char **);
+			explanation:
+			it execute all the command that are not implemented,
+			we call here execvp(that command) and it execute from /bin
+			derectory if that command is not present simply error msg
+			will displayed.
+			
+		5.int   is_pipe();
+			explanation:
+			
+		6.int   is_redirect();
+			explanation:
+			
+		7.int   set_redirect_flag(char *);
+			explanation:
+			
+		8.void  pipe_command_execute(char*);
+			explanation:
+			void pipe_command_execute(char* command){
+				parse(command,token,"|");	
+				id1=fork();	
+				if(!pid1){
+					int fd_array[2]; 
+					if(pipe(fd_array) == -1)
+					printf("error in pipe system call");                        		 
+					pid2 = fork();
+					if (pid2==0){	
+						dup2(fd_array[1] ,1);
+						close(fd_array[1]);
+						close(fd_array[0]);                                             
+						command_ALL(commandArray1); 
+						}
+					else{
+						dup2(fd_array[0] ,0);
+						close(fd_array[0]);
+						close(fd_array[1]);
+						command_ALL(commandArray2); 
+                    }
+				exit(0);     
+				}    
+				else
+					wait(&flag);     
+			}
+		9.void  handle_redirect(char*, int );
+			explanation:
+			void handle_redirect(char* command , int flag){  
+      		if(<){           
+   				parse(command, part ,"<"); 
+  		    		pid=fork();
+   		    		else if(0==pid){
+	   			 		char* filename=strtok(part[1] , " ");
+    			 			if (!dup2( open(filename,O_RDONLY),0))        
+       			    			command_ALL(arg);
+       			 			else
+       			    			printf("unable to open file!!!\n");       
+   			 		}
+   		     		else
+      					wait(&status);
+      		  }
+      		  else if(>){ // here we can also handle > > > > a many as we want.
+      		    	part[0]=strtok(command,">");    
+	           	  	pid=fork();
+   		      			if(pid<0)             
+      						printf("error in forking!!!!!!");
+   		      			else if(0==pid)
+   							{
+   			   				char* filename=strtok(part[i-1] , " ");
+   			   				dup2(open(filename , O_CREAT  | O_WRONLY | O_TRUNC,0777) , 1);
+    			   				command_ALL(arg);	
+			   				exit(0);    
+   			 				}
+   		       				else
+      			  				wait(&status);
+      		     }
+      		    else if(>>){    
+      					part[0]=strtok(command,">>");    
+   						while( part[++i]=strtok(NULL ,">>") );
+						pid=fork();
+   						else if(0==pid){
+   			  				char* filename=strtok(part[i-1] , " ");
+   			  				dup2(open(filename,O_CREAT | O_APPEND |O_WRONLY,0777) , 1);
+    			  			command_ALL(arg);
+			  				exit(0);    
+   			 				}
+   							else
+      			   				wait(&status);		
+      		       }
+				else if(< >){       		
+                    fd2=open(toke2[0],O_RDONLY,0777);
+                    fd3=open(toke3[0],O_CREAT|O_WRONLY|O_TRUNC,0777);
+					close(0);
+					dup(fd2);
+					close(fd2);
+                    dup2(fd3,1);
+                    close(fd3);
+					execvp(*toke1,toke1);    
+			    }
+				else if(> <){
+					fd2=open(toke3[0],O_RDONLY,0777);
+					fd3=open(toke2[0],O_CREAT|O_WRONLY|O_TRUNC,0777);
+					close(0);
+					dup(fd2);
+					close(fd2);  
+					dup2(fd3,1);
+					close(fd3);
+					execvp(*toke1,toke1);
+				}
+			}	
+		10.void exe_echo(char **);
+			explanation:
+			
+		11.void exe_PWD();
+			explanation:
+			printf("%s\n",(char *)getenv("PWD"));
+		12.void exe_wc(char *,char *);
+			explanation:
+			
+		13.void print_history();
+			explanation:		

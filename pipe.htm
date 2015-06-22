@@ -1,0 +1,540 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<!--Converted with LaTeX2HTML 96.1-h (September 30, 1996) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds -->
+<HTML>
+<HEAD>
+<TITLE>Pipes</TITLE>
+<META NAME="description" CONTENT="Pipes">
+<META NAME="keywords" CONTENT="lecture-notes">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<LINK REL=STYLESHEET HREF="lecture-notes.css">
+</HEAD>
+<BODY BGCOLOR="#e0e0fe" LANG="EN" >
+ <A NAME="tex2html531" HREF="node29.html"><IMG WIDTH=37 HEIGHT=24 ALIGN=BOTTOM ALT="next" SRC="http://www.cim.mcgill.ca/%7Efranco/icons/latex2html/next_motif.gif"></A> <A NAME="tex2html529" HREF="node17.html"><IMG WIDTH=26 HEIGHT=24 ALIGN=BOTTOM ALT="up" SRC="http://www.cim.mcgill.ca/%7Efranco/icons/latex2html/up_motif.gif"></A> <A NAME="tex2html525" HREF="node27.html"><IMG WIDTH=63 HEIGHT=24 ALIGN=BOTTOM ALT="previous" SRC="http://www.cim.mcgill.ca/%7Efranco/icons/latex2html/previous_motif.gif"></A> <A NAME="tex2html533" HREF="node1.html"><IMG WIDTH=65 HEIGHT=24 ALIGN=BOTTOM ALT="contents" SRC="http://www.cim.mcgill.ca/%7Efranco/icons/latex2html/contents_motif.gif"></A>  
+  <A NAME="tex2html1" HREF="http://www.cim.mcgill.ca/%7Efranco/OpSys-304-427/Class/Class.html"><IMG  ALIGN=BOTTOM SRC="http://www.cim.mcgill.ca/%7Efranco/icons/arrows/backarrow_motif.gif">Back to Operating Systems Home Page</A>
+<BR>
+<B> Next:</B> <A NAME="tex2html532" HREF="node29.html">Synopsis on concurrency</A>
+<B>Up:</B> <A NAME="tex2html530" HREF="node17.html">Process Description and Control </A>
+<B> Previous:</B> <A NAME="tex2html526" HREF="node27.html">File descriptor manipulation</A>
+<BR> <P>
+<H2><A NAME="SECTION00064000000000000000">Pipes</A></H2>
+<P>
+This section will deal with the simplest and most used inter-process
+communication (IPC) mechanism in UNIX, namely <EM>pipelines</EM>. The treatment
+will be informal, since the subject of IPC and related problems has not been
+covered theoretically in the course. The idea behind introducing these
+concepts now is that they provide some useful hands-on background on the
+technical issues involved in IPC. This allows to understand the basic problems
+by noticing the troubles that may come to hamper some first-thought, naive
+solutions, and not by applying a rather abstruse theory instead.  Both
+approaches have their advantages and disadvantages and yet, although
+possessing a sound knowledge of the theoretical foundations is a must for any
+serious software designer, it's a fact that succesful software systems are
+often built in the former way, and textbooks in the latter.
+<P>
+A pipe is a half-duplex communication channel defined by two file descriptors,
+one open for writing and one for reading, such that what is written in the
+former pops out in the latter. A pipe is created by passing and array of two
+integers to the <TT>pipe()</TT> system call, declared as follows:
+<PRE>int pipe(int fildes[2]);</PRE>
+The return value is 0 for ``OK'', guess what for error.  If the pipe is
+created succesfully, then its readable end is <TT>fildes[0]</TT>, while <TT>
+  fildes[1]</TT> is the writable one. A way to picture a pipe is shown in
+fig.&nbsp;<A HREF="node28.html#figpipe">9</A>: note that the data flowing in a pipe are managed
+directly by the kernel (you can think of them flowing ``through'' the
+kernel).
+<P><A NAME="515">&#160;</A><A NAME="figpipe">&#160;</A><IMG ALIGN=BOTTOM SRC="_27383_figure495.gif"><BR>
+<STRONG>Figure 9:</STRONG> A UNIX pipe.<BR>
+<P>
+While the use of a pipe within one process is next to nothing, pipes make a
+case for the sharing of file descriptors between parent and children. If you
+first open a pipe, and then spawn a child, parent and child will share the
+pipe's file descriptors as well, so you get the scenario depicted in
+fig.&nbsp;<A HREF="node28.html#figpipefork">10</A>
+<P><A NAME="522">&#160;</A><A NAME="figpipefork">&#160;</A><IMG ALIGN=BOTTOM SRC="_27383_figure502.gif"><BR>
+<STRONG>Figure 10:</STRONG> A UNIX pipe after forking.<BR>
+<P>
+Now you are free to set the direction of the data flow as you wish:
+<UL>
+<LI> close the reading end in the parent and the writing end in the child, if
+  you want to send data from the parent to the child;
+<LI> close the writing end in the parent and the reading end in the child, if
+  you want to send data in the opposite direction;
+<LI> don't close anything, hoping to have a two-way channel, if  you
+  want to shoot yourself in a foot.
+</UL>
+The reason for the last black dot (appropriately called ``bullet'' by
+typographers), is that the kernel uses just one internal buffer for temporary
+storage of the flowing data, hence what goes in one direction overwrites
+whatever is a naive programmer tries to send backward. So, just to stress
+the concept once more: pipes make half-duplex, i.e. one-way,  communication
+channels.
+<P>
+An example should make things clearer. Consider a program that wants to
+display some text output is has created, one page at a time. Rather then
+reinvent the wheel, you can use to this aim one of several UNIX pagination
+utilities, like <TT>more</TT>, or <TT>less</TT>, perhaps the user's favourite one,
+which is usually indicated in a <TT>PAGER</TT> environment variable. The idea is
+then to open a pipe, fork a child, set the pipe's file descriptors in the
+child so that the reading end becomes stdin (since the pager program wants to
+read its input from stdin), exec the pager, and finally have the parent send
+the data through the pipe.
+<P>
+The resulting source is:
+<P>
+<PRE> 
+#include &lt;sys/types.h&gt; 
+#include &lt;sys/wait.h&gt; 
+#include &lt;unistd.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdio.h&gt; 
+
+#define DEF_PAGER &quot;/usr/ucb/more&quot; /* Default pager program */
+#define DEF_PAGER_LEN 13          /* Characters in its path name */
+#define LINES 120                 /* Number of lines of data */
+#define COLUMNS 80                /* Characters per line */
+
+int main(int argc, char *argv[])
+{
+    int i, j, status;
+    char *lines[LINES]; /* Will hold the data */
+    int pfd[2]; /* Pipe file descriptors
+        
+    /* Generate LINES lines of  data */
+    for (i=0; i&lt;LINES; i++)
+    {
+        /* Allocate one line to hold the data*/
+        lines[i]=(char*)calloc((size_t)COLUMNS, sizeof(char));
+        if (lines[i]==NULL)
+        {
+            fprintf(stderr,&quot;Calloc failed at line %d\n&quot;,i);
+            exit(1);
+        }
+        
+        /* Write a useful message in it */
+        sprintf(lines[i], &quot;This is useful message #%3d\n&quot;, i);
+    }
+     
+    /* Create the pipe */
+    status=pipe(pfd);
+    if (status == -1)
+    {
+        perror(&quot;pipe&quot;);
+        exit(1);
+    }
+    
+    /* Spawn child */
+    status=fork();
+    if (status &lt; 0)
+    {
+        perror(&quot;fork&quot;);
+        exit(1);
+    }
+
+    else if (status == 0) 
+    {
+        /* Child section */
+
+        char *pager, *arg0;
+        
+        /* Duplicate pipe's reading end into stdin */
+        status=dup2(pfd[0], STDIN_FILENO); 
+        if (status==-1)
+        {
+            perror(&quot;dup2&quot;);
+            exit(1);
+        }
+
+        /*
+        // Close unuseful file descriptors: the pipe's
+        // writing and reading ends (the latter is not needed anymore, 
+        // after the duplication).
+        */
+        close(pfd[1]);
+        close(pfd[0]);
+        
+        /* Get user's pager, if any, or default */
+        pager=getenv(&quot;PAGER&quot;);
+        if (pager == NULL)
+        {
+            pager=(char*)calloc((size_t)DEF_PAGER_LEN, sizeof(char));
+            if (pager == NULL)
+            {
+                fprintf(stderr,&quot;Calloc failed for pager\n&quot;);
+                exit(1);
+            }
+
+            strcpy(pager, DEF_PAGER);
+        }
+        
+        /* 
+        // Find command name: its the substring starting right of
+        // the rightmost '/' character in the pager pathname.
+        // See manpage for strrchr.
+        */
+        arg0=strrchr(pager, '/');
+        if (arg0 != NULL)
+            arg0++;
+        else
+            arg0=pager; /* No slashes in pager. */
+         
+        
+        /* 
+        // Must use execlp, since dunno' whether PAGER, if any, 
+        // contained slashes or not
+        */
+        execlp(pager, arg0, (char *)0);
+        perror(&quot;execl&quot;);
+        exit(1);
+    }
+    
+    else
+    {
+        /* Parent section */
+
+        /* Close unuseful file descriptors */
+        close(STDIN_FILENO);
+        close(STDOUT_FILENO);
+        close(pfd[0]);
+                
+        /* Dump all the data lines in the pipe */
+        for (i=0; i&lt;LINES; i++)
+        {
+            status=write(pfd[1],
+                         (void*)lines[i],
+                         (size_t)strlen(lines[i])
+                         );
+            if (status==-1)
+            {
+                perror(&quot;write&quot;);
+                exit(1);
+            }
+        }
+        
+        /* 
+        // Must close the pipe when finished, or the pager
+        // will hang waiting for more input.
+        */
+        close(pfd[1]);
+
+        /* Wait for child to finish */
+        wait(&amp;status);
+        if (status &amp; 0xffff != 0)
+        {
+            fprintf(stderr,&quot;Something went wrong in the pager\n&quot;);
+            exit(1);
+        }
+    }
+    
+    /* All done */
+    return 0;
+}</PRE>
+<P>
+Let's consider another example, in which a two way communication is needed.
+Suppose that a program has to read from stdin an unsorted sequence of text
+lines of the form:
+<PRE>Firstname Lastname Idnumber</PRE>
+where the last string represent an integer number (you know what I mean...),
+and they must first be sorted in ascending number order, and then all those
+with a number greater that a certain value, specified via a command line
+option (or 0 if no option is given), must be printed on the standard output.
+We can easily use the system's <TT>sort</TT> utility by fork-executing it in a
+child after creating a pipe to send the data to be sorted, and a second pipe
+to receive them back from <TT>sort</TT>. It's then easy print only the
+good ones. Again, we'll duplicate file descriptors in order to feed 
+<TT>sort</TT> from its stdin, and pipe its stdout back to the parent.
+The resulting solution is:
+<PRE>/* 
+// Sortsel: sort and select lines.
+// The command synopsis is:
+//      sortsel [number]
+// where the optional argument number specifies the number at which
+// selection begins.
+*/
+
+#include &lt;sys/types.h&gt; 
+#include &lt;sys/wait.h&gt; 
+#include &lt;unistd.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdio.h&gt; 
+
+#define LINELEN 80  /* MAx text line length */
+
+int main(int argc, char *argv[])
+{
+    long int start=0, number;
+    int nread;
+    char *error, *numstr;
+    char buf[LINELEN];
+    char *startline, *endline; 
+    int par2sort[2]; /* Pipe toward sort */
+    int sort2par[2]; /* Pipe from sort   */
+           
+    /* 
+    // Find the option if given, bail out if it's not 
+    // a valid number. See manpage for strtol.
+    */
+    if (argc&gt;1)
+    {
+        start=strtol(argv[1], &amp;error, 10);
+        if (error==argv[1] || start&lt;0)
+        {
+            fprintf(stderr,&quot;Usage: sortsel [number]\n&quot;);
+            exit(1);
+        }
+    }
+    
+    /* Open pipes */
+    if (pipe(par2sort) == -1 || pipe(sort2par) == -1)
+    {
+        perror(&quot;pipe&quot;);
+        exit(1);
+    }
+    
+    /* Fork child */
+    switch (fork())
+    {
+      case -1:
+        perror(&quot;fork&quot;);
+        exit(1);
+
+      case 0:
+        /* Child section */
+        /* 
+        // Duplicate child's reading end of par2sort into stdin,
+        // and child's writing end of sort2par into stdout
+        */
+        if (dup2(par2sort[0], STDIN_FILENO) ==-1 ||
+            dup2(sort2par[1], STDOUT_FILENO)==-1
+            )
+        {
+            perror(&quot;dup2&quot;);
+            exit(1);
+        }
+        
+        /* Close unused fildes. */
+        close(par2sort[0]);
+        close(par2sort[1]);
+        close(sort2par[0]);
+        close(sort2par[1]);
+        
+        /* 
+        // All set: exec sort so that it sorts on each
+        // line's  third field. See manpage for sort.
+        */
+        execlp(&quot;sort&quot;, &quot;sort&quot;, &quot;-n&quot;, &quot;+2&quot;, (char *)0);
+        perror(&quot;execlp&quot;);
+        exit(1);
+
+      default:
+        /* Parent section */
+        /* Close unused fildes */
+        close(par2sort[0]);
+        close(sort2par[1]);
+        
+        /* 
+        // Read lines from stdin and feed them to
+        // child until end. We use a moving pointer
+        // to make sure we feed whole lines.
+        */
+        startline=buf;
+        while (read(STDIN_FILENO,(void*)startline, 
+                    (size_t)(LINELEN-(startline-buf))
+                    ) &gt; 0
+               )
+        {
+            /* Find end of last line contained in buf */
+            startline=buf;
+            while((endline=strchr(startline, '\n'))!=NULL)
+                startline=endline+1;
+            
+            if (startline==buf)
+            {
+                fprintf(stderr,&quot;Line too long\n&quot;);
+                exit(1);
+            }
+            else
+                endline=startline-1;
+                       
+            /* Write found lines to pipe */
+            if (write(par2sort[1], (void*)buf,
+                      (size_t)(1+(endline-buf))
+                      ) &lt; 0
+                )
+            {
+                perror(&quot;write 1&quot;);
+                exit(1);
+            }
+
+            /* Shift to buf[0] the unwritten characters */
+            startline=buf;
+            endline++;
+            while(endline-buf &lt; LINELEN)
+                *(startline++) = *(endline++);
+
+            /* 
+            // Next read will start just right of last 
+            // shifted character 
+            */
+        }
+        
+        /* 
+        // Close feeding pipe to tell sort it can start sorting,
+        // then read all its output, and print the good lines only.
+        // The same moving pointer technique as above is used to
+        // deal with one line at at time.
+        */
+        close(par2sort[1]);
+        startline=buf;
+        
+        while (read(sort2par[0],(void*)startline,
+                    (size_t)(80-(startline-buf))
+                    ) &gt;0
+               )
+        {
+            /* 
+            // Find the number in the line.  
+            // This assumes that neither Firstname nor Lastname
+            // contain any digit. See manpage for strpbrk.
+            */
+            startline=buf;
+            while((endline=strchr(startline,'\n'))!=NULL)
+            {
+                *endline='\0';  /* Terminate string */
+                
+                numstr=strpbrk(startline, &quot;0123456789&quot;);
+                if (numstr==NULL)
+                {
+                    fprintf(stderr,&quot;Bad line\n&quot;);
+                    exit(1);
+                }
+                
+                /* 
+                // Convert the string to number and 
+                // check if  it's any good 
+                */
+                number=strtol(numstr, &amp;error, 10);
+                if (error==numstr || number &lt; 0)
+                {
+                    fprintf(stderr,&quot;Bad number&quot;);
+                    exit(1);
+                }
+                
+                if (number &gt;= start)
+                {
+                    /* Write back the EOL */
+                    *endline='\n';
+                    
+                    if (write(STDOUT_FILENO,(void*)startline,
+                              (size_t)(1+(endline-startline))
+                              ) &lt;0
+                        )
+                    {
+                        perror(&quot;write 2&quot;);
+                        exit(1);
+                    }
+                }
+                                
+                /* Pass to next line in buffer */
+                startline=endline+1;
+            }
+
+            /* Shift remaining characters as above */
+            endline=startline;
+            startline=buf;
+            while (endline-buf &lt; LINELEN)
+                *startline++ = *endline++;
+        }
+    }
+    
+    /* All done */
+    return 0;
+}</PRE>
+<P>
+To test the program, compile it and then generate some unsorted lines, for
+example using the following command at the UNIX shell prompt
+<PRE>% cat &gt; unslines
+John Doe 12039
+Bill Frisk 201
+Fritz Boll 82737
+Paul Lace 312
+Eli Mentor-Watson 9999
+^D</PRE>
+where the command <TT>cat &gt; unslines</TT> is used to copy lines typed at the
+keyboard onto file unslines, and ^ D (CONTROL-D) ends the insertion
+(this keystroke pair sends the EOF, end-of-file character to <TT>cat</TT>, which
+in turn react closing the output file and exiting).  Now you can test the
+program with commands like
+<PRE>% sortsel &lt; unslines
+% sortsel 400 &lt; unslines</PRE>
+Where the &lt; symbol tells the shell to feed the standard input of command
+<TT>sortsel</TT> from file <TT>unslines</TT>.
+<P>
+All considered, the above solution looks overtly complicated, all the more so
+since you could achieve the same result with a shell comand like:
+<PRE>% cat unslines | sort -n +2 | awk '{if ($3 &gt; 400) print}'</PRE>
+For those not familiar enough with shell commands, the above line can be read
+as follows: ``Print (<TT>cat</TT>) all the content of <TT>unslines</TT> on stdout;
+pipe (<IMG WIDTH=2 HEIGHT=30 ALIGN=MIDDLE ALT="tex2html_wrap_inline1417" SRC="img1.gif">) this stdout into <TT>sort</TT>'s stdin; sort this stdin in
+ascending numerical order with respect to the third field of each line and
+output sorted lines on stdout; pipe this stdout into <TT>awk</TT>'s stdin; print
+on stdout all the lines from stdin whose third field, when numerically
+evaluated, is greater than 400''
+<P>
+The point is that in the above comamnd you are using a sophisticated command
+interpreter program, the shell, to chain the three commands (<TT>cat</TT>, <TT>
+  sort</TT> and <TT>awk</TT>). What really happens is that the shell fork-execs
+those commands one by one, and creates the pipes between them as well. Yet
+it's not always the case that you have a shell handy, for example because you
+are creating one, of because efficiency constraints impose you to deal
+directly with the system.
+<P>
+Actually, there's one more reason for the ugliness of the above program,
+namely all that juggling with pointers to achieve line-by-line I/O even if we
+are using the block-oriented I/O sytem calls <TT>read()</TT> and <TT>write()</TT>.
+The source code would be greatly simplified if made use of stream-oriented
+libraries, like <TT>fgets()</TT> and <TT>fputs()</TT>, to directly read/write lines.
+However these libraries need to deal with streams (i.e. <TT>FILE</TT> pointers),
+and can't work with the simple file descriptors returned by <TT>pipe()</TT>.
+Indeed, we might use the <TT>fdopen()</TT> library to ``promote'' file descriptors
+into <TT>FILE</TT> pointers, but the UNIX designers kindly provide a simpler and
+more elegant solution.
+<P>
+The stream-oriented library routine <TT>popen()</TT>, declared as:
+<PRE>FILE *popen(char *command, char *type);</PRE>
+opens a stream-oriented pipe between the current process and program <TT>
+  command</TT>, taking care of all the dirty jobs: forking, duplicating file
+descriptors, executing <TT>command</TT>, etc. What's more, it actually executes a
+Bourne shell that in turn executes <TT>command</TT>: this implies that <TT>
+  command</TT> can be any command line that you would normally type at the shell
+prompt, i.e. it can include pipelines (<IMG WIDTH=2 HEIGHT=30 ALIGN=MIDDLE ALT="tex2html_wrap_inline1417" SRC="img1.gif">) through several commands,
+input/output redirection (&gt; and/or &lt;), <TT>PATH</TT> search for commands,
+etc. The direction of the data flow in the pipe is given by the <TT>type</TT>
+argument to <TT>popen()</TT>: if it's ``w'' the process calling <TT>popen()</TT> can
+sends data to <TT>command</TT>'s stdin through the stream returned by <TT>
+  popen()</TT>; if, otherwise, it's ``r'', the caller receives data from <TT>
+  command</TT>'s stdout. The routine returns a <TT>NULL</TT> pointer if either the
+pipe opening or the execution of the command(s) fail.
+<P>
+Note that even so you need two pipes for a bi-directional communication: <TT>
+  popen()</TT> is nothing but a wrapper around <TT>fork()</TT>, <TT>dup2()</TT>, <TT>
+  pipe()</TT> and <TT>exec()</TT>, providing a higher level programming interface.
+Try to rewrite the above program using it<A NAME="tex2html46" HREF="footnode.html#570"><IMG  ALIGN=BOTTOM ALT="gif" SRC="http://www.cim.mcgill.ca/%7Efranco/icons/latex2html/foot_motif.gif"></A>.
+<P>
+Finally, note that the fact that <TT>popen()</TT> only handles stdin or stdout at
+the ``remote'' end can be an unacceptable constrain for some applications. In
+that case you can't do anything but resort to the full fledged sytem calls.
+<P>
+<HR><A NAME="tex2html531" HREF="node29.html"><IMG WIDTH=37 HEIGHT=24 ALIGN=BOTTOM ALT="next" SRC="http://www.cim.mcgill.ca/%7Efranco/icons/latex2html/next_motif.gif"></A> <A NAME="tex2html529" HREF="node17.html"><IMG WIDTH=26 HEIGHT=24 ALIGN=BOTTOM ALT="up" SRC="http://www.cim.mcgill.ca/%7Efranco/icons/latex2html/up_motif.gif"></A> <A NAME="tex2html525" HREF="node27.html"><IMG WIDTH=63 HEIGHT=24 ALIGN=BOTTOM ALT="previous" SRC="http://www.cim.mcgill.ca/%7Efranco/icons/latex2html/previous_motif.gif"></A> <A NAME="tex2html533" HREF="node1.html"><IMG WIDTH=65 HEIGHT=24 ALIGN=BOTTOM ALT="contents" SRC="http://www.cim.mcgill.ca/%7Efranco/icons/latex2html/contents_motif.gif"></A>  
+  <A NAME="tex2html1" HREF="http://www.cim.mcgill.ca/%7Efranco/OpSys-304-427/Class/Class.html"><IMG  ALIGN=BOTTOM SRC="http://www.cim.mcgill.ca/%7Efranco/icons/arrows/backarrow_motif.gif">Back to Operating Systems Home Page</A>
+<BR>
+<B> Next:</B> <A NAME="tex2html532" HREF="node29.html">Synopsis on concurrency</A>
+<B>Up:</B> <A NAME="tex2html530" HREF="node17.html">Process Description and Control </A>
+<B> Previous:</B> <A NAME="tex2html526" HREF="node27.html">File descriptor manipulation</A>
+<P><ADDRESS>
+<a href="http://www.cim.mcgill.ca/~franco/Home.html">  <i> Franco Callari </i></a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,5 @@
+for shell programming.
+http://snap.nlc.dcccd.edu/reference/shellguide/shells.html
+
+2.for unix system call-easy definition.
+http://www.tutorialspoint.com/unix_system_calls/dup.htm
